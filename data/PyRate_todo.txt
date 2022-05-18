@@ -1,0 +1,130 @@
+PyRate todo:
+-- https://www.researchgate.net/profile/Elizabeth-Hadly/publication/234148967_Mammalian_Response_to_Cenozoic_Climatic_Change/links/00b7d5359471b93bdb000000/Mammalian-Response-to-Cenozoic-Climatic-Change.pdf?origin=publication_detail
+-- Generate .csv data for all main samples
+
+Ancient mammals
+
+Art. 500M -- 11 parų
+Carn. 300 M -- 7 paros 
+Periss. 500M -- 11 parų
+Creo. 30M -- 1 para
+Prob. 50M -- 2 paros
+
+
+python3 write_Pyrate_input.py Artiodactyla
+python3 write_Pyrate_input.py Carnivora
+python3 write_Pyrate_input.py Proboscidea
+python3 write_Pyrate_input.py Perissodactyla
+python3 write_Pyrate_input.py Creodonta
+python3 write_Pyrate_input.py  Ancient_mammals
+
+
+Eilučių skaičius:
+   2066 Ancient_mammals.csv -- 20M, 1d.
+   9082 Artiodactyla.csv -- 600M, 14d. 
+   5380 Carnivora.csv -- 300M, 7d.
+    445 Creodonta.csv -- 5M, 12 h.
+   4767 Perissodactyla.csv -- 300M, 7d.
+   1727 Proboscidea.csv -- 	20M, 1d.
+
+
+-- generate PyRate input files with 20 replicates
+
+extract.ages(file="Artiodactyla.csv", replicates=20)
+extract.ages(file="Carnivora.csv", replicates=20)
+extract.ages(file="Proboscidea.csv", replicates=20)
+extract.ages(file="Creodonta.csv", replicates=20)
+extract.ages(file="Perissodactyla.csv", replicates=20)
+extract.ages(file="Ancient_mammals.csv", replicates=20)
+
+-- write SLURM job array sbatch scripts, with a single run:
+
+
+-- upload all scripts and data to the server
+
+PyRate files:
+
+rsync -avH /home/opit/Desktop/Palaeo/PyRate/data/Ancient_mammals_PyRate.py -e ssh hpc_vu70412_vu.lt@hpc.mif.vu.lt:/scratch/lustre/home/hpc_vu70412_vu.lt/PyRate/data 
+rsync -avH /home/opit/Desktop/Palaeo/PyRate/data/Artiodactyla_PyRate.py -e ssh hpc_vu70412_vu.lt@hpc.mif.vu.lt:/scratch/lustre/home/hpc_vu70412_vu.lt/PyRate/data 
+rsync -avH /home/opit/Desktop/Palaeo/PyRate/data/Carnivora_PyRate.py -e ssh hpc_vu70412_vu.lt@hpc.mif.vu.lt:/scratch/lustre/home/hpc_vu70412_vu.lt/PyRate/data 
+rsync -avH /home/opit/Desktop/Palaeo/PyRate/data/Creodonta_PyRate.py -e ssh hpc_vu70412_vu.lt@hpc.mif.vu.lt:/scratch/lustre/home/hpc_vu70412_vu.lt/PyRate/data 
+rsync -avH /home/opit/Desktop/Palaeo/PyRate/data/Perissodactyla_PyRate.py -e ssh hpc_vu70412_vu.lt@hpc.mif.vu.lt:/scratch/lustre/home/hpc_vu70412_vu.lt/PyRate/data 
+rsync -avH /home/opit/Desktop/Palaeo/PyRate/data/Proboscidea_PyRate.py -e ssh hpc_vu70412_vu.lt@hpc.mif.vu.lt:/scratch/lustre/home/hpc_vu70412_vu.lt/PyRate/data
+
+
+SLURM scripts:
+rsync -avH /home/opit/Desktop/Palaeo/PyRate/data/SLURM/Artiodactyla.sh -e ssh hpc_vu70412_vu.lt@hpc.mif.vu.lt:/scratch/lustre/home/hpc_vu70412_vu.lt/ &
+rsync -avH /home/opit/Desktop/Palaeo/PyRate/data/SLURM/Carnivora.sh -e ssh hpc_vu70412_vu.lt@hpc.mif.vu.lt:/scratch/lustre/home/hpc_vu70412_vu.lt/ &
+rsync -avH /home/opit/Desktop/Palaeo/PyRate/data/SLURM/Creodonta.sh -e ssh hpc_vu70412_vu.lt@hpc.mif.vu.lt:/scratch/lustre/home/hpc_vu70412_vu.lt/ &
+rsync -avH /home/opit/Desktop/Palaeo/PyRate/data/SLURM/Perissodactyla.sh -e ssh hpc_vu70412_vu.lt@hpc.mif.vu.lt:/scratch/lustre/home/hpc_vu70412_vu.lt/ &
+rsync -avH /home/opit/Palaeo/PyRate/data/SLURM/Ancient_mammals.sh -e ssh hpc_vu70412_vu.lt@hpc.mif.vu.lt:/scratch/lustre/home/hpc_vu70412_vu.lt/ &
+rsync -avH /home/opit/Desktop/Palaeo/PyRate/data/SLURM/Proboscidea.sh -e ssh hpc_vu70412_vu.lt@hpc.mif.vu.lt:/scratch/lustre/home/hpc_vu70412_vu.lt/
+
+Stage limits
+rsync -avH /home/opit/Desktop/Palaeo/PyRate/data/stages.txt -e ssh hpc_vu70412_vu.lt@hpc.mif.vu.lt:/scratch/lustre/home/hpc_vu70412_vu.lt/PyRate/data/
+
+
+-- run main sample SLURM scripts
+
+#----------------------------STATUS-------------------------:
+-----------------------species-------------------------------
+Proboscidea: DONE. Can be rarefied x10 (improves autocorrelation). Burnin=10% is OK. Verified with Tracer.
+
+Creodonta: atiduoti dali I. -- DONE, laukiu patvirtinimo
+Ancient mammals: rerun with increased time limit, -restore_mcmc (8:20:00) -- done, finished in 5968.26s. TODO: see how to concatenate the files. Merging does not work, rerun the chains with the same settings as chain 1 -- SLURM script already uploaded
+Carnivora: TODO: relaunch with -M 5.  
+Perissodactyla: TODO: relaunch with -M 5, reduce chain length by 30%, for chains 2-20.
+Artiodactyla: TODO: when time is available, relaunch with -M 5, increase chain length, 10x rarefied sampling. 
+
+
+#After 05.09 analysis:
+
+sbatch Creodonta.sh -- elapsed 22191.1 (6.5 hours) without RJMCMC improvement, elapsed time: 22191.1 with RJMCMC | 40M samples
+
+sbatch Proboscidea.sh 
+
+Notes: 173 species, elapsed 12860.03 (4 hours) without RJMCMC improvement. Changed on 05-09: 1 hour runtime limit, -n 2000000, -M 5: elapsed 1321.54s. (22 min). Testing with increased fivefold: -n 10000000 -s 10000, 2 hour limit, elapsed: 6124.09 -- 105 min. -- OK. From ESS/autocorrelation analysis we find that the sample size can be halved again (to n=6000000, i.e. 500 samples, with burnin=100). Time limit set to 1:10:00. Cutoff due to time limit, TODO: determine chain lengths
+TODO: download all chains, run tests, verify validity of the data. presumably done, waiting for validation: note diff. b/w 1 and other chains. n-20M, sampled every 2k, looks v. good. n=6M, sampled every 10k, does not.
+
+
+sbatch Ancient_mammals.sh -- 562 species, elapsed time: 22720.52 (6.5 hours) without RJMCMC improvement (20M samples, s=2000). With RJMCMC: 10M, s=4000, time limit: 03:00:00, ~120 samples missing (2380 out of 5000). My suggestion is to use 20M again, with rarer sampling: -n 20000000 -s 10000 -- In 6:10h, 1/4 entries (~400) are missing, TODO: increase the time up to 8 hours. 
+
+sbatch Carnivora.sh -- 1107 sp., 14187 samples in 2-21:36:14, 24221 in almost 5 days. Nearly large enough ESS, suboptimal k_birth/k_death chains, chains drifting. Finished at 526526.27s -- 147h (6 days). TODO: inspect PyRate analysis files. Relaunch with new flags upon MIF confirmation
+
+
+sbatch Perissodactyla.sh -- 738 species, 107 h. Chain length can be reduced by 30%.
+
+
+sbatch Artiodactyla.sh -- 1670 species. 17439 samples in 5 days. ESS_posterior = ~20, really poor k_deat/k_birth chains. Large scale chain drifts.
+
+
+-- download the files:
+
+rsync -ravzh --stats --progress hpc_vu70412_vu.lt@hpc.mif.vu.lt:/scratch/lustre/home/hpc_vu70412_vu.lt/PyRate/data/pyrate_mcmc_logs/Artiodactyla* /home/opit/Palaeo/PyRate/data/Artiodactyla
+
+ rsync -ravzh --stats --progress hpc_vu70412_vu.lt@hpc.mif.vu.lt:/scratch/lustre/home/hpc_vu70412_vu.lt/PyRate/data/pyrate_mcmc_logs/Creodonta* /home/opit/Palaeo/PyRate/data/Creodonta/
+
+ rsync -ravzh --stats --progress hpc_vu70412_vu.lt@hpc.mif.vu.lt:/scratch/lustre/home/hpc_vu70412_vu.lt/PyRate/data/pyrate_mcmc_logs/Proboscidea_* /home/opit/Palaeo/PyRate/data/Proboscidea/
+
+ rsync -ravzh --stats --progress hpc_vu70412_vu.lt@hpc.mif.vu.lt:/scratch/lustre/home/hpc_vu70412_vu.lt/PyRate/data/pyrate_mcmc_logs/Perissodactyla_* /home/opit/Palaeo/PyRate/data/Perissodactyla/
+
+ rsync -ravzh --stats --progress hpc_vu70412_vu.lt@hpc.mif.vu.lt:/scratch/lustre/home/hpc_vu70412_vu.lt/PyRate/data/pyrate_mcmc_logs/Ancient_mammals* /home/opit/Palaeo/PyRate/data/Ancient_mammals
+
+  rsync -ravzh --stats --progress hpc_vu70412_vu.lt@hpc.mif.vu.lt:/scratch/lustre/home/hpc_vu70412_vu.lt/PyRate/data/pyrate_mcmc_logs/Carnivora* /home/opit/Palaeo/PyRate/data/Carnivora
+
+-- PyRate analysis:
+ python3 print_PyRate_analysis_commands.py <clade> <path> <chain> <burnin> <cutoff -- how many samples are removed from the end of the chain>
+
+python3 print_PyRate_analysis_commands.py Creodonta ../data/MIF/Creodonta/ 1 100
+python3 print_PyRate_analysis_commands.py Proboscidea 1 100 0
+python3 print_PyRate_analysis_commands.py Carnivora 1 100 0
+python3 print_PyRate_analysis_commands.py Artiodactyla 1 1000 0
+
+--  monitor the output w/ PyRate and Arviz tools1
+Arviz:
+mkdir /home/opit/Palaeo/PyRate/data/Creodonta/img
+python3 /home/opit/Palaeo/PyRate/data/analyze_MCMC.py 
+
+-- refine SLURM time limits
+
+sreport -T cpu,mem,gres/gpu cluster AccountUtilizationByUser Start=0101 End=0531 User=hpc_vu70412_vu.lt
