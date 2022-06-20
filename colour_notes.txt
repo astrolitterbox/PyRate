@@ -1,0 +1,20 @@
+Ancient mammals
+Creodonta
+Carnivora
+Artiodactyla
+Perissodactyla
+Proboscidea
+
+
+#1b9e77 -- Perissodactyla
+#d95f02 -- Carnivora
+#7570b3 -- Proboscidea
+#e7298a -- Creodonta
+#66a61e -- Artiodactyla
+#e6ab02 -- Ancient mammals
+
+https://colorbrewer2.org/?type=qualitative&scheme=Dark2&n=6
+https://projects.susielu.com/viz-palette?colors=[%22#d95f02%22,%22#7570b3%22,%22#e7298a%22,%22#66a61e%22,%22#1b9e77%22,%22#e6ab02%22]&backgroundColor=%22white%22&fontColor=%22black%22&mode=%22normal%22
+
+
+['#1b9e77','#d95f02','#7570b3','#e7298a','#66a61e','#e6ab02']
